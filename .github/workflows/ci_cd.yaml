@@ -39,3 +39,34 @@ jobs:
         if: always()
         continue-on-error: true
         run: docker compose down -v
+
+  publish:
+    name: Publish services to DockerHub
+    runs-on: ubuntu-latest
+    needs: [ build ]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Pull docker image to docker registry
+        env:
+          registry_token: ${{ secrets.REGISTRY_PULL_TOKEN }}
+        run: |
+          echo $registry_token | docker login -u meekie --password-stdin
+
+          cd ./Gateway
+          docker build -t meekie/gateway-service:latest .
+          docker push meekie/gateway-service:latest
+
+          cd ..
+          cd ./FlightService
+          docker build -t meekie/flight-service:latest .
+          docker push meekie/flight-service:latest
+
+          cd ..
+          cd ./TicketService
+          docker build -t meekie/ticket-service:latest .
+          docker push meekie/ticket-service:latest
+
+          cd ..
+          cd ./BonusService
+          docker build -t meekie/bonus-service:latest .
+          docker push meekie/bonus-service:latest
