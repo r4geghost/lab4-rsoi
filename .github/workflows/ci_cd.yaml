@@ -70,3 +70,28 @@ jobs:
           cd ./BonusService
           docker build -t meekie/bonus-service:latest .
           docker push meekie/bonus-service:latest
+
+  deploy:
+    name: Wait for deploy on VK Cloud
+    runs-on: ubuntu-latest
+    needs: [ publish ]
+    steps:
+      - name: Wait for deploy
+        run: sleep 3m
+
+  run_api_tests:
+    name: Run integration tests on VK Cloud
+    runs-on: ubuntu-latest
+    needs: [ deploy ]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Add hosts to /etc/hosts
+        run: |
+          sudo echo "212.233.96.58 lab4.rsoi.dyusov.com" | sudo tee -a /etc/hosts
+      - name: Run API Tests
+        uses: matt-ball/newman-action@master
+        with:
+          collection: postman/collection.json
+          environment: postman/environment.json
+          delayRequest: 3000
+          reporters: '[ "cli" ]'

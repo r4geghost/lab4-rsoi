@@ -1,7 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gateway
+  name: gateway-app
+  annotations:
+    # force policy will ensure that deployment is updated
+    # even when tag is unchanged (latest remains)
+    keel.sh/policy: force
+    keel.sh/trigger: poll
 spec:
   replicas: 1
   selector:
@@ -36,6 +41,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: flight-app
+  annotations:
+    # force policy will ensure that deployment is updated
+    # even when tag is unchanged (latest remains)
+    keel.sh/policy: force
+    keel.sh/trigger: poll
 spec:
   replicas: 1
   selector:
@@ -70,6 +80,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ticket-app
+  annotations:
+    # force policy will ensure that deployment is updated
+    # even when tag is unchanged (latest remains)
+    keel.sh/policy: force
+    keel.sh/trigger: poll
 spec:
   replicas: 1
   selector:
@@ -104,6 +119,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: bonus-app
+  annotations:
+    # force policy will ensure that deployment is updated
+    # even when tag is unchanged (latest remains)
+    keel.sh/policy: force
+    keel.sh/trigger: poll
 spec:
   replicas: 1
   selector:
